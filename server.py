@@ -6,10 +6,12 @@ app = Flask(__name__)
 CORS(app)
 
 @app.route("/")
+@cross_origin()
 def home():
     return send_from_directory('.', 'index.html')
 
 @app.route("/decrypt")
+@cross_origin()
 def decrypt():
     plaintext = request.args.get('plaintext')
     ciphertext = request.args.get('ciphertext')
