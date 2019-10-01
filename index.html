@@ -8,25 +8,41 @@
     <meta name="description" content="Computer Security Assn2" />
     <meta name="author" content="GAMK" />
 
-    <link rel="stylesheet" href="css/styles.css?v=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
   </head>
 
   <body>
-    <p>Enter plaintext</p>
-    <div>
+    <div
+      class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm"
+    >
+      <h5 class="my-0 mr-md-auto font-weight-normal">
+        Computer Security Assignment 2
+      </h5>
+      <nav class="my-2 my-md-0 mr-md-3">
+        <a class="p-2 text-dark" href="#">Section 3</a>
+        <a class="p-2 text-dark" href="#">Section 4</a>
+      </nav>
     </div>
-    <input id="plaintext" />
-    <br />
-    <p>Enter Cipher</p>
-    <input id="cipher" />
-    <br />
-    <br />
-    <button onclick="findKey()">Find key</button>
-    <br />
-    <br />
-    <div id="warning" style="color:red"></div>
-    <p>Result:</p>
-    <p id="result"></p>
+    <div class="text-center">
+      <p class="lead">Enter Plaintext</p>
+      <input id="plaintext" />
+      <br />
+      <p class="lead" style="padding-top: 2em">Enter Cipher</p>
+      <input id="cipher" />
+      <br />
+      <br />
+      <button onclick="findKey()" type="button" class="btn btn-primary">Find key</button>
+      <br />
+      <br />
+      <div id="warning" style="color:red"></div>
+      <p class="lead">Result:</p>
+      <p id="result" class="lead"></p>
+    </div>
     <script>
       var newId = document.getElementById("newId");
       var plaintext = document.getElementById("plaintext");
@@ -46,31 +62,27 @@
           return;
         }
 
-        let host = 'https://compsecurityassn2.herokuapp.com/decrypt?'
+        let host = "https://compsecurityassn2.herokuapp.com/decrypt?";
         // let host = "http://localhost:5000/decrypt?";
         let Http = new XMLHttpRequest();
         let url =
           host + "plaintext=" + plaintext.value + "&ciphertext=" + cipher.value;
         // url = 'http://localhost:5000/decrypt?plaintext=you need to find the key&ciphertext=ntneudihyyeodkoefte'
         Http.open("GET", url);
-        // Http.setRequestHeader('Access-Control-Allow-Origin', '*')
-        // Http.setRequestHeader('Access-Control-Allow-Headers', '*')
-        // Http.setRequestHeader('Access-Control-Allow-Methods', '*')
-        // Http.setRequestHeader('Access-Control-Allow-Origin', '*')
         Http.send();
 
         Http.onreadystatechange = e => {
-          console.log(e)
-          if (e.target.response){
+          console.log(e);
+          if (e.target.response) {
             try {
-              let response = JSON.parse(e.target.response)
-              result.innerHTML = response['key'].toString()
+              let response = JSON.parse(e.target.response);
+              result.innerHTML = response["key"].toString();
             } catch (error) {
-              console.log(error)
-              result.innerHTML = e.target.response
+              console.log(error);
+              result.innerHTML = e.target.response;
             }
           } else {
-            result.innerHTML = "Try Again..."
+            result.innerHTML = "Try Again...";
           }
         };
       }
