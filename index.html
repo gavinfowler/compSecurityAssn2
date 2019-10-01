@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+
+    <title>Computer Security Assn2</title>
+    <meta name="description" content="Computer Security Assn2" />
+    <meta name="author" content="GAMK" />
+
+    <link rel="stylesheet" href="css/styles.css?v=1.0" />
+  </head>
+
+  <body>
+    <p>Enter plaintext</p>
+    <div>
+    </div>
+    <input id="plaintext" />
+    <br />
+    <p>Enter Cipher</p>
+    <input id="cipher" />
+    <br />
+    <br />
+    <button onclick="findKey()">Find key</button>
+    <br />
+    <br />
+    <div id="warning" style="color:red"></div>
+    <p>Result:</p>
+    <p id="result"></p>
+    <script>
+      var newId = document.getElementById("newId");
+      var plaintext = document.getElementById("plaintext");
+      var cipher = document.getElementById("cipher");
+      var result = document.getElementById("result");
+      var warning = document.getElementById("warning");
+
+      function findKey() {
+        result.innerHTML = "Working...";
+        warning.innerHTML = "";
+        let plaintextVal = plaintext.value.replace(/\s+/g, "").split("");
+        let cipherVal = cipher.value.replace(" ", "").split("");
+        if (plaintextVal.length != cipherVal.length) {
+          warning.innerHTML =
+            "Warning: Plaintext and cipher are not the same length!";
+          result.innerHTML = "";
+          return;
+        }
+
+        // let host = 'https://compsecurityassn2.herokuapp.com/decrypt?'
+        let host = "http://localhost:5000/decrypt?";
+        let Http = new XMLHttpRequest();
+        let url =
+          host + "plaintext=" + plaintext.value + "&ciphertext=" + cipher.value;
+        // url = 'http://localhost:5000/decrypt?plaintext=you need to find the key&ciphertext=ntneudihyyeodkoefte'
+        Http.open("GET", url);
+        Http.send();
+
+        Http.onreadystatechange = e => {
+          console.log(e)
+          if (e.target.response){
+            try {
+              let response = JSON.parse(e.target.response)
+              result.innerHTML = response['key'].toString()
+            } catch (error) {
+              console.log(error)
+              result.innerHTML = e.target.response
+            }
+          } else {
+            result.innerHTML = "Try Again..."
+          }
+        };
+      }
+    </script>
+  </body>
+</html>

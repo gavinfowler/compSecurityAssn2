@@ -1,16 +1,20 @@
-from flask import Flask,request
+from flask import Flask,request,send_from_directory
 import itertools
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route("/")
 def home():
-    return "Hello, World!"
+    return send_from_directory('.', 'index.html')
 
 @app.route("/decrypt")
 def decrypt():
     plaintext = request.args.get('plaintext')
     ciphertext = request.args.get('ciphertext')
+    print(plaintext)
+    print(ciphertext)
     if not plaintext or not ciphertext:
         return "Incorrect params"
     for i in range(2,8):
@@ -27,7 +31,6 @@ def columnarTransposition(msg, key, ciphertext):
     """
     Function to encrypt a message using columnar transposition using a specific key
     """
-    origMsg = msg
     msg = msg.replace(" ", "").lower()
     arr = []
 
