@@ -36,7 +36,9 @@
       <input id="cipher" />
       <br />
       <br />
-      <button onclick="findKey()" type="button" class="btn btn-primary">Find key</button>
+      <button onclick="findKey()" type="button" class="btn btn-primary">
+        Find key
+      </button>
       <br />
       <br />
       <div id="warning" style="color:red"></div>
@@ -62,17 +64,21 @@
           return;
         }
 
-        let host = "https://compsecurityassn2.herokuapp.com/decrypt?";
-        // let host = "http://localhost:5000/decrypt?";
+        let host = window.location.host
+          ? "http://" + window.location.host
+          : "https://compsecurityassn2.herokuapp.com";
         let Http = new XMLHttpRequest();
         let url =
-          host + "plaintext=" + plaintext.value + "&ciphertext=" + cipher.value;
-        // url = 'http://localhost:5000/decrypt?plaintext=you need to find the key&ciphertext=ntneudihyyeodkoefte'
+          host +
+          "/decrypt?plaintext=" +
+          plaintext.value +
+          "&ciphertext=" +
+          cipher.value;
+        console.log(url);
         Http.open("GET", url);
         Http.send();
 
         Http.onreadystatechange = e => {
-          console.log(e);
           if (e.target.response) {
             try {
               let response = JSON.parse(e.target.response);
