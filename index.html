@@ -49,6 +49,10 @@
         // let host = 'https://compsecurityassn2.herokuapp.com/decrypt?'
         let host = "http://localhost:5000/decrypt?";
         let Http = new XMLHttpRequest();
+        Http.setRequestHeader('Access-Control-Allow-Origin', '*')
+        Http.setRequestHeader('Access-Control-Allow-Headers', '*')
+        Http.setRequestHeader('Access-Control-Allow-Methods', '*')
+        Http.setRequestHeader('Access-Control-Allow-Origin', '*')
         let url =
           host + "plaintext=" + plaintext.value + "&ciphertext=" + cipher.value;
         // url = 'http://localhost:5000/decrypt?plaintext=you need to find the key&ciphertext=ntneudihyyeodkoefte'
