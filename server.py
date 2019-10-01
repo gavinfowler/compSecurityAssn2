@@ -3,7 +3,7 @@ import itertools
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)
+# CORS(app)
 
 @app.route("/")
 @cross_origin()
