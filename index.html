@@ -53,10 +53,10 @@
           host + "plaintext=" + plaintext.value + "&ciphertext=" + cipher.value;
         // url = 'http://localhost:5000/decrypt?plaintext=you need to find the key&ciphertext=ntneudihyyeodkoefte'
         Http.open("GET", url);
-        Http.setRequestHeader('Access-Control-Allow-Origin', '*')
-        Http.setRequestHeader('Access-Control-Allow-Headers', '*')
-        Http.setRequestHeader('Access-Control-Allow-Methods', '*')
-        Http.setRequestHeader('Access-Control-Allow-Origin', '*')
+        // Http.setRequestHeader('Access-Control-Allow-Origin', '*')
+        // Http.setRequestHeader('Access-Control-Allow-Headers', '*')
+        // Http.setRequestHeader('Access-Control-Allow-Methods', '*')
+        // Http.setRequestHeader('Access-Control-Allow-Origin', '*')
         Http.send();
 
         Http.onreadystatechange = e => {
