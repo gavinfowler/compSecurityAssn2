@@ -1,4 +1,1 @@
-alembic==1.2.0
-aniso8601==8.0.0
-apturl==0.5.2
 Flask==1.1.1
