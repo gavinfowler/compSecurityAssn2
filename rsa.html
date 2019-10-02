@@ -43,7 +43,7 @@
         <div class="form-group" style="width: 50%; margin: auto">
           <div style="padding: 2em">
             <label for="comment">Public Key:</label>
-            <textarea class="form-control" rows="5" id="privateKey"></textarea>
+            <textarea class="form-control" rows="5" id="publicKey"></textarea>
           </div>
           <button
             onclick="savePublicKey()"
@@ -116,14 +116,73 @@
     </div>
     <div style="padding-bottom: 10em"></div>
     <script>
-      var newId = document.getElementById("newId");
-      var plaintext = document.getElementById("plaintext");
-      var cipher = document.getElementById("cipher");
-      var result = document.getElementById("result");
-      var warning = document.getElementById("warning");
+      //https://en.wikibooks.org/wiki/Cryptography/A_Basic_Public_Key_Example
+      var publicKey = document.getElementById("publicKey");
+      var privateKey = document.getElementById("privateKey");
 
       function keyGen() {
-        console.log("keyGen");
+        // Public Key Gen
+        var num = 50;
+        var p = randomPrime(num);
+        var q = randomPrime(num);
+        p, (q = 5), 11;
+        var m = p * q;
+        var f = (p - 1) * (q - 1);
+        var choices = Array.from(Array(f - 2).keys()).map(function(val) {
+          return val + 2;
+        });
+        choices = choices.map(el => {
+          if (gcd(el, f) === 1) return el;
+        });
+        choices = choices.filter(function(el) {
+          return el != null;
+        });
+        var encryptionExponent = choices.shuffle().pop();
+        var publicResult = encryptionExponent + "," + m;
+        publicKey.value = publicResult;
+
+        // End Public Key Gen
+        // Private Key Gen
+
+        var private = Array.from(Array(500).keys())
+          .map(el => {
+            if ((el * encryptionExponent) % f == 1) return el;
+          })
+          .filter(function(el) {
+            return el != null;
+          });
+
+        private = private.pop();
+        var privateResult = private + "," + m;
+        privateKey.value = privateResult;
+
+        // End Private Key Gen
+      }
+
+      Array.prototype.shuffle = function() {
+        var i = this.length,
+          j,
+          temp;
+        if (i == 0) return this;
+        while (--i) {
+          j = Math.floor(Math.random() * (i + 1));
+          temp = this[i];
+          this[i] = this[j];
+          this[j] = temp;
+        }
+        return this;
+      };
+
+      function gcd(x, y) {
+        if (typeof x !== "number" || typeof y !== "number") return false;
+        x = Math.abs(x);
+        y = Math.abs(y);
+        while (y) {
+          var t = y;
+          y = x % y;
+          x = t;
+        }
+        return x;
       }
 
       function onFileLoad(elementId, event) {
@@ -184,7 +243,6 @@
 
         return isPrime(num) ? num : randomPrime(max);
       };
-      console.log(randomPrime(100));
     </script>
   </body>
 </html>
