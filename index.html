@@ -65,7 +65,7 @@
         }
 
         let host = window.location.host
-          ? "http://" + window.location.host
+          ? window.location.protocol + '//' + window.location.host
           : "https://compsecurityassn2.herokuapp.com";
         let Http = new XMLHttpRequest();
         let url =
