@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+
+    <title>Computer Security Assn2</title>
+    <meta name="description" content="Computer Security Assn2" />
+    <meta name="author" content="GAMK" />
+
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+  </head>
+
+  <body>
+    <div
+      class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm"
+    >
+      <h5 class="my-0 mr-md-auto font-weight-normal">
+        Computer Security Assignment 2
+      </h5>
+      <nav class="my-2 my-md-0 mr-md-3">
+        <a class="p-2 text-dark" href="/">Cryptanalysis</a>
+        <a class="p-2 text-dark" href="/rsa">RSA Cryptosystem</a>
+      </nav>
+    </div>
+    <div style="text-align: center; padding-bottom: 2em">
+      <h2>Key Generation</h2>
+    </div>
+    <div class="text-center">
+      <button onclick="keyGen()" type="button" class="btn btn-lg btn-primary">
+        Generate Keys
+      </button>
+      <div
+        style="display: flex;
+        flex-direction: row;
+        padding-bottom: 2em"
+      >
+        <div class="form-group" style="width: 50%; margin: auto">
+          <div style="padding: 2em">
+            <label for="comment">Public Key:</label>
+            <textarea class="form-control" rows="5" id="privateKey"></textarea>
+          </div>
+          <button
+            onclick="savePublicKey()"
+            type="button"
+            class="btn btn-lg btn-primary"
+          >
+            Save Public Key
+          </button>
+        </div>
+        <div class="form-group" style="width: 50%; margin: auto">
+          <div style="padding: 2em">
+            <label for="comment">Private Key:</label>
+            <textarea class="form-control" rows="5" id="privateKey"></textarea>
+          </div>
+          <button
+            onclick="savePrivateKey()"
+            type="button"
+            class="btn btn-lg btn-primary"
+          >
+            Save Private Key
+          </button>
+        </div>
+      </div>
+
+      <div style="text-align: center;padding-top:2em">
+        <h2>Encryption</h2>
+      </div>
+      <div class="form-group" style="width: 50%; margin: auto">
+        <div style="padding: 2em">
+          <label for="comment">Private Key:</label>
+          <textarea class="form-control" rows="5" id="privateKey"></textarea>
+        </div>
+        <p>Upload public key</p>
+        <input
+          type="file"
+          onchange='onChooseFile(event, onFileLoad.bind(this, "contents"))'
+        />
+        <p id="contents"></p>
+        <button
+          onclick="savePrivateKey()"
+          type="button"
+          class="btn btn-lg btn-primary"
+        >
+          Encrypt
+        </button>
+      </div>
+
+      <div style="text-align: center;padding-top:2em">
+        <h2>Decrypt</h2>
+      </div>
+      <div class="form-group" style="width: 50%; margin: auto">
+        <div style="padding: 2em">
+          <label for="comment">Private Key:</label>
+          <textarea class="form-control" rows="5" id="privateKey"></textarea>
+        </div>
+        <p>Upload public key</p>
+        <input
+          type="file"
+          onchange='onChooseFile(event, onFileLoad.bind(this, "contents"))'
+        />
+        <p id="contents"></p>
+        <button
+          onclick="savePrivateKey()"
+          type="button"
+          class="btn btn-lg btn-primary"
+        >
+          Decrypt
+        </button>
+      </div>
+    </div>
+    <div style="padding-bottom: 10em"></div>
+    <script>
+      var newId = document.getElementById("newId");
+      var plaintext = document.getElementById("plaintext");
+      var cipher = document.getElementById("cipher");
+      var result = document.getElementById("result");
+      var warning = document.getElementById("warning");
+
+      function keyGen() {
+        console.log("keyGen");
+      }
+
+      function onFileLoad(elementId, event) {
+        document.getElementById(elementId).innerText = event.target.result;
+      }
+
+      function onChooseFile(event, onLoadFileHandler) {
+        if (typeof window.FileReader !== "function")
+          throw "The file API isn't supported on this browser.";
+        let input = event.target;
+        if (!input)
+          throw "The browser does not properly implement the event object";
+        if (!input.files)
+          throw "This browser does not support the `files` property of the file input.";
+        if (!input.files[0]) return undefined;
+        let file = input.files[0];
+        let fr = new FileReader();
+        fr.onload = onLoadFileHandler;
+        fr.readAsText(file);
+      }
+
+      function savePublicKey() {
+        console.log("savePublicKey");
+        download("test.txt", "this is some demo text");
+      }
+
+      function savePrivateKey() {
+        console.log("savePrivateKey");
+        // download("test.txt", "this is some demo text");
+      }
+
+      function download(filename, text) {
+        var element = document.createElement("a");
+        element.setAttribute(
+          "href",
+          "data:text/plain;charset=utf-8," + encodeURIComponent(text)
+        );
+        element.setAttribute("download", filename);
+
+        element.style.display = "none";
+        document.body.appendChild(element);
+
+        element.click();
+
+        document.body.removeChild(element);
+      }
+
+      const randomInt = (min, max) =>
+        Math.floor(Math.random() * Math.floor(max - min) + Math.floor(min));
+
+      const isPrime = num =>
+        !Array.from(Array(Math.floor(num / 2))).some((_, index) =>
+          index >= 2 ? num % index === 0 : false
+        );
+
+      const randomPrime = max => {
+        const num = randomInt(3, max);
+
+        return isPrime(num) ? num : randomPrime(max);
+      };
+      console.log(randomPrime(100));
+    </script>
+  </body>
+</html>

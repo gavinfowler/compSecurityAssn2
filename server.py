@@ -11,6 +11,11 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 def home():
     return send_from_directory('.', 'index.html')
 
+@app.route("/rsa")
+@cross_origin()
+def rsa():
+    return send_from_directory('.', 'rsa.html')
+
 @app.route("/decrypt")
 @cross_origin()
 def decrypt():
