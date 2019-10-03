@@ -206,12 +206,12 @@
 
       function savePublicKey() {
         console.log("savePublicKey");
-        download("test.txt", "this is some demo text");
+        download("publicKey.txt", publicKey.value);
       }
 
       function savePrivateKey() {
         console.log("savePrivateKey");
-        // download("test.txt", "this is some demo text");
+        download("privateKey.txt", privateKey.value);
       }
 
       function download(filename, text) {
