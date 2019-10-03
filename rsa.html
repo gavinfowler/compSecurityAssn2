@@ -143,7 +143,7 @@
         // End Public Key Gen
         // Private Key Gen
 
-        var private = Array.from(Array(500).keys())
+        var private = Array.from(Array(1000).keys())
           .map(el => {
             if ((el * encryptionExponent) % f == 1) return el;
           })
@@ -152,7 +152,12 @@
           });
 
         private = private.pop();
-        var privateResult = private + "," + m;
+        var privateResult = ''
+        if(private == undefined){
+          privateResult = 'Error generation key, try again'
+        } else {
+          privateResult = private + "," + m;
+        }
         privateKey.value = privateResult;
 
         // End Private Key Gen
