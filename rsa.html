@@ -16,8 +16,9 @@
       crossorigin="anonymous"
     />
   </head>
-
   <body>
+    <!-- Key Generation -->
+
     <div
       class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm"
     >
@@ -69,6 +70,8 @@
         </div>
       </div>
 
+      <!-- Encryption -->
+
       <div style="text-align: center;padding-top:2em">
         <h2>Encryption</h2>
       </div>
@@ -104,6 +107,8 @@
           ></textarea>
         </div>
       </div>
+
+      <!-- Decryption -->
 
       <div style="text-align: center;padding-top:2em">
         <h2>Decrypt</h2>
@@ -168,7 +173,7 @@
         let key = document
           .getElementById("uploadedEncryption")
           .textContent.split(",");
-        let message = plainText.value.replace(/\s/g, '').split("");
+        let message = plainText.value.replace(/\s/g, "").split("");
         if (key == "") {
           encryptedText.value = "";
           encryptedWarning.innerHTML =
@@ -205,6 +210,7 @@
         decryptedText.value = decryptedArr.join("");
       }
 
+      // File uploads
       function onFileLoad(elementId, event) {
         document.getElementById(elementId).innerText = event.target.result;
       }
@@ -248,6 +254,7 @@
         document.body.removeChild(element);
       }
 
+      // Letter to num & num to letter
       const alphaVal = s => {
         if (isNaN(parseInt(s))) {
           return s.toLowerCase().charCodeAt(0) - 97 + 1;
@@ -275,23 +282,21 @@
 
       RSA.generate = function(keysize) {
         function randomPrime(bits) {
-          const min = bigInt(6074001000).shiftLeft(bits - 33); // min ≈ √2 × 2^(bits - 1)
-          const max = bigInt.one.shiftLeft(bits).minus(1); // max = 2^(bits) - 1
+          const min = bigInt(6074001000).shiftLeft(bits - 33);
+          const max = bigInt.one.shiftLeft(bits).minus(1);
           for (;;) {
-            const p = bigInt.randBetween(min, max); // WARNING: not a cryptographically secure RNG!
+            const p = bigInt.randBetween(min, max);
             if (p.isProbablePrime(256)) {
               return p;
             }
           }
         }
 
-        // set up variables for key generation
-        const e = bigInt(65537); // use fixed public exponent
+        const e = bigInt(65537);
         let p;
         let q;
         let lambda;
 
-        // generate p and q such that λ(n) = lcm(p − 1, q − 1) is coprime with e and |p-q| >= 2^(keysize/2 - 100)
         do {
           p = randomPrime(keysize / 2);
           q = randomPrime(keysize / 2);
@@ -306,9 +311,9 @@
         );
 
         return {
-          n: p.multiply(q), // public key (part I)
-          e: e, // public key (part II)
-          d: e.modInv(lambda) // private key d = e^(-1) mod λ(n)
+          n: p.multiply(q),
+          e: e,
+          d: e.modInv(lambda)
         };
       };
 
