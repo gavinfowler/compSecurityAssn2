@@ -129,7 +129,7 @@
       var privateKey = document.getElementById("privateKey");
       var plainText = document.getElementById("plainText");
       var cipherText = document.getElementById("cipherText");
-      var ecryptedText = document.getElementById("encryptedText");
+      var encryptedText = document.getElementById("encryptedText");
       var decryptedText = document.getElementById("decryptedText");
 
       function keyGen() {
@@ -176,11 +176,15 @@
       }
 
       function encryption(){
-        ecryptedText.value = plainText.value;
+	var pubKey = publicKey.value.split(',');
+	var pubExpo = Math.pow(plainText.value, pubKey[0]);
+        encryptedText.value = pubExpo%pubKey[1];
       }
 
       function decryption(){
-        decryptedText.value = cipherText.value;
+	var privKey = privateKey.value.split(',');
+	var privExpo = Math.pow(cipherText.value, privKey[0]);
+	decryptedText.value = privExpo%privKey[1];
       }
 
       Array.prototype.shuffle = function() {
