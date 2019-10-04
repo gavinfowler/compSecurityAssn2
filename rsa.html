@@ -7,6 +7,7 @@
     <title>Computer Security Assn2</title>
     <meta name="description" content="Computer Security Assn2" />
     <meta name="author" content="GAMK" />
+    <script src="https://peterolson.github.io/BigInteger.js/BigInteger.min.js"></script>
 
     <link
       rel="stylesheet"
@@ -89,10 +90,15 @@
         >
           Encrypt
         </button>
-	<div style="padding: 2em">
-	  <label for="comment">Encrypted Message:</label>
-          <textarea readonly class="form-control" rows="3" id="encryptedText"></textarea>
-	</div>
+        <div style="padding: 2em">
+          <label for="comment">Encrypted Message:</label>
+          <textarea
+            readonly
+            class="form-control"
+            rows="3"
+            id="encryptedText"
+          ></textarea>
+        </div>
       </div>
 
       <div style="text-align: center;padding-top:2em">
@@ -116,10 +122,15 @@
         >
           Decrypt
         </button>
-	<div style="padding: 2em">
-	  <label for="comment">Decrypted Message:</label>
-	  <textarea readonly class="form-control" rows="3" id="decryptedText"></textarea>
-	</div>
+        <div style="padding: 2em">
+          <label for="comment">Decrypted Message:</label>
+          <textarea
+            readonly
+            class="form-control"
+            rows="3"
+            id="decryptedText"
+          ></textarea>
+        </div>
       </div>
     </div>
     <div style="padding-bottom: 10em"></div>
@@ -134,12 +145,12 @@
 
       function keyGen() {
         // Public Key Gen
-        var num = 50;
-        var p = randomPrime(num);
-        var q = randomPrime(num);
-        var m = p * q;
-        var f = (p - 1) * (q - 1);
-        var choices = Array.from(Array(f - 2).keys()).map(function(val) {
+        let num = 50;
+        let p = randomPrime(num);
+        let q = randomPrime(num);
+        let m = p * q;
+        let f = (p - 1) * (q - 1);
+        let choices = Array.from(Array(f - 2).keys()).map(function(val) {
           return val + 2;
         });
         choices = choices.map(el => {
@@ -148,14 +159,14 @@
         choices = choices.filter(function(el) {
           return el != null;
         });
-        var encryptionExponent = choices.shuffle().pop();
-        var publicResult = encryptionExponent + "," + m;
+        let encryptionExponent = choices.shuffle().pop();
+        let publicResult = encryptionExponent + "," + m;
         publicKey.value = publicResult;
 
         // End Public Key Gen
         // Private Key Gen
 
-        var private = Array.from(Array(1000).keys())
+        let private = Array.from(Array(1000).keys())
           .map(el => {
             if ((el * encryptionExponent) % f == 1) return el;
           })
@@ -164,9 +175,9 @@
           });
 
         private = private.pop();
-        var privateResult = ''
-        if(private == undefined){
-          privateResult = 'Error generation key, try again'
+        let privateResult = "";
+        if (private == undefined) {
+          privateResult = "Error generation key, try again";
         } else {
           privateResult = private + "," + m;
         }
@@ -175,20 +186,31 @@
         // End Private Key Gen
       }
 
-      function encryption(){
-	var pubKey = publicKey.value.split(',');
-	var pubExpo = plainText.value ** pubKey[0];
-        encryptedText.value = pubExpo%pubKey[1];
+      function encryption() {
+        let pubKey = publicKey.value.split(",");
+        let pubExpo = plainText.value ** pubKey[0];
+        let result = pubExpo % pubKey[1];
+        console.log("pubKey: ", pubKey);
+        console.log("pubExpo: ", pubExpo);
+        console.log("result: ", result);
+        let newRes = RSA.encrypt(plainText.value, 11, 164);
+        console.log("encrypt: ", newRes);
+        console.log("encrypt: ", RSA.decrypt(newRes, 971, 164));
+        encryptedText.value = result;
       }
 
-      function decryption(){
-	var privKey = privateKey.value.split(',');
-	var privExpo = cipherText.value ** privKey[0];
-	decryptedText.value = privExpo%privKey[1];
+      function decryption() {
+        let privKey = privateKey.value.split(",");
+        let privExpo = cipherText.value ** privKey[0];
+        let result = privExpo % privKey[1];
+        console.log("privKey: ", privKey);
+        console.log("privExpo: ", privExpo);
+        console.log("result: ", result);
+        decryptedText.value = result;
       }
 
       Array.prototype.shuffle = function() {
-        var i = this.length,
+        let i = this.length,
           j,
           temp;
         if (i == 0) return this;
@@ -270,6 +292,30 @@
         const num = randomInt(3, max);
 
         return isPrime(num) ? num : randomPrime(max);
+      };
+
+      const alphaVal = s => s.toLowerCase().charCodeAt(0) - 97 + 1;
+    </script>
+    <script>
+      RSA = {};
+      RSA.encrypt = function(m, n, e) {
+        m = m.replace(/\s/g, "").split("");
+        console.log(m);
+        console.log(alphaVal("a"));
+        let result = [];
+        for (let index = 0; index < m.length; index++) {
+          result.push(bigInt(alphaVal(m[index])).modPow(e, n));
+        }
+        return result;
+      };
+
+      RSA.decrypt = function(c, d, n) {
+        console.log(c);
+        let result = [];
+        for (let index = 0; index < c.length; index++) {
+          result.push(bigInt(c[index]).modPow(n, d));
+        }
+        return result;
       };
     </script>
   </body>
