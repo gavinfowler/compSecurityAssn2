@@ -177,13 +177,13 @@
 
       function encryption(){
 	var pubKey = publicKey.value.split(',');
-	var pubExpo = Math.pow(plainText.value, pubKey[0]);
+	var pubExpo = plainText.value ** pubKey[0];
         encryptedText.value = pubExpo%pubKey[1];
       }
 
       function decryption(){
 	var privKey = privateKey.value.split(',');
-	var privExpo = Math.pow(cipherText.value, privKey[0]);
+	var privExpo = cipherText.value ** privKey[0];
 	decryptedText.value = privExpo%privKey[1];
       }
 
