@@ -73,8 +73,8 @@
       </div>
       <div class="form-group" style="width: 50%; margin: auto">
         <div style="padding: 2em">
-          <label for="comment">Private Key:</label>
-          <textarea class="form-control" rows="5" id="privateKey"></textarea>
+          <label for="comment">Enter Plain Text Message:</label>
+          <textarea class="form-control" rows="5" id="plainText"></textarea>
         </div>
         <p>Upload public key</p>
         <input
@@ -83,12 +83,16 @@
         />
         <p id="contents"></p>
         <button
-          onclick="savePrivateKey()"
+          onclick="encryption()"
           type="button"
           class="btn btn-lg btn-primary"
         >
           Encrypt
         </button>
+	<div style="padding: 2em">
+	  <label for="comment">Encrypted Message:</label>
+          <textarea readonly class="form-control" rows="3" id="encryptedText"></textarea>
+	</div>
       </div>
 
       <div style="text-align: center;padding-top:2em">
@@ -96,22 +100,26 @@
       </div>
       <div class="form-group" style="width: 50%; margin: auto">
         <div style="padding: 2em">
-          <label for="comment">Private Key:</label>
-          <textarea class="form-control" rows="5" id="privateKey"></textarea>
+          <label for="comment">Enter Cipher Text Message:</label>
+          <textarea class="form-control" rows="5" id="cipherText"></textarea>
         </div>
-        <p>Upload public key</p>
+        <p>Upload private key</p>
         <input
           type="file"
           onchange='onChooseFile(event, onFileLoad.bind(this, "contents"))'
         />
         <p id="contents"></p>
         <button
-          onclick="savePrivateKey()"
+          onclick="decryption()"
           type="button"
           class="btn btn-lg btn-primary"
         >
           Decrypt
         </button>
+	<div style="padding: 2em">
+	  <label for="comment">Decrypted Message:</label>
+	  <textarea readonly class="form-control" rows="3" id="decryptedText"></textarea>
+	</div>
       </div>
     </div>
     <div style="padding-bottom: 10em"></div>
@@ -119,6 +127,10 @@
       //https://en.wikibooks.org/wiki/Cryptography/A_Basic_Public_Key_Example
       var publicKey = document.getElementById("publicKey");
       var privateKey = document.getElementById("privateKey");
+      var plainText = document.getElementById("plainText");
+      var cipherText = document.getElementById("cipherText");
+      var ecryptedText = document.getElementById("encryptedText");
+      var decryptedText = document.getElementById("decryptedText");
 
       function keyGen() {
         // Public Key Gen
@@ -161,6 +173,14 @@
         privateKey.value = privateResult;
 
         // End Private Key Gen
+      }
+
+      function encryption(){
+        ecryptedText.value = plainText.value;
+      }
+
+      function decryption(){
+        decryptedText.value = cipherText.value;
       }
 
       Array.prototype.shuffle = function() {
