@@ -63,6 +63,12 @@
           result.innerHTML = "";
           return;
         }
+        if (plaintextVal.length <= 0 || cipherVal.length <= 0){
+          warning.innerHTML =
+            "Warning: Plaintext or Cipher are empty!";
+          result.innerHTML = "";
+          return;
+        }
 
         let host = window.location.host
           ? window.location.protocol + '//' + window.location.host
