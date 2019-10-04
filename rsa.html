@@ -80,9 +80,9 @@
         <p>Upload public key</p>
         <input
           type="file"
-          onchange='onChooseFile(event, onFileLoad.bind(this, "uploadedFile"))'
+          onchange='onChooseFile(event, onFileLoad.bind(this, "uploadedEncryption"))'
         />
-        <p id="uploadedFile"></p>
+        <p id="uploadedEncryption"></p>
         <p
           id="encryptedWarning"
           style="padding-top: 1em;padding-bottom: 1em;color:red"
@@ -116,9 +116,13 @@
         <p>Upload private key</p>
         <input
           type="file"
-          onchange='onChooseFile(event, onFileLoad.bind(this, "contents"))'
+          onchange='onChooseFile(event, onFileLoad.bind(this, "uploadedDecryption"))'
         />
-        <p id="contents"></p>
+        <p id="uploadedDecryption"></p>
+        <p
+          id="decryptedWarning"
+          style="padding-top: 1em;padding-bottom: 1em;color:red"
+        ></p>
         <button
           onclick="decryption()"
           type="button"
@@ -156,13 +160,15 @@
       function keyGen() {
         var key = RSA.generate(10);
         publicKey.innerHTML = key.n + "," + key.e;
-        privateKey.innerHTML = key.d + "," + key.e;
+        privateKey.innerHTML = key.d + "," + key.n;
       }
 
       function encryption() {
         encryptedWarning.innerHTML = "";
-        let key = document.getElementById("uploadedFile").textContent.split(',');
-        let message = plainText.value.split("");
+        let key = document
+          .getElementById("uploadedEncryption")
+          .textContent.split(",");
+        let message = plainText.value.replace(/\s/g, '').split("");
         if (key == "") {
           encryptedText.value = "";
           encryptedWarning.innerHTML =
@@ -172,20 +178,31 @@
 
         let encryptedArr = [];
         message.forEach(element => {
-          encryptedArr.push(RSA.encrypt(alphaVal(element),key[0],key[1]));
+          encryptedArr.push(RSA.encrypt(alphaVal(element), key[0], key[1]));
         });
-
         encryptedText.value = encryptedArr.join(",");
       }
 
       function decryption() {
-        let privKey = privateKey.value.split(",");
-        let privExpo = cipherText.value ** privKey[0];
-        let result = privExpo % privKey[1];
-        console.log("privKey: ", privKey);
-        console.log("privExpo: ", privExpo);
-        console.log("result: ", result);
-        decryptedText.value = result;
+        decryptedWarning.innerHTML = "";
+        let key = document
+          .getElementById("uploadedDecryption")
+          .textContent.split(",");
+        let message = cipherText.value.split(",").map(e => parseInt(e));
+        if (key == "") {
+          decryptedWarning.value = "";
+          decryptedWarning.innerHTML =
+            "Private key is incorrect, try uploading again";
+          return;
+        }
+
+        let decryptedArr = [];
+        message.forEach(element => {
+          let num = numToAlpha(RSA.decrypt(element, key[0], key[1]));
+          decryptedArr.push(num);
+        });
+
+        decryptedText.value = decryptedArr.join("");
       }
 
       function onFileLoad(elementId, event) {
@@ -208,12 +225,10 @@
       }
 
       function savePublicKey() {
-        console.log("savePublicKey");
         download("public.key", publicKey.value);
       }
 
       function savePrivateKey() {
-        console.log("savePrivateKey");
         download("private.key", privateKey.value);
       }
 
@@ -302,11 +317,7 @@
       };
 
       RSA.decrypt = function(c, d, n) {
-        console.log(c);
-        console.log(d);
-        console.log(n);
         let result = bigInt(c).modPow(d, n);
-        console.log(result);
         return result;
       };
     </script>
