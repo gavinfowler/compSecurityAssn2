@@ -80,9 +80,13 @@
         <p>Upload public key</p>
         <input
           type="file"
-          onchange='onChooseFile(event, onFileLoad.bind(this, "contents"))'
+          onchange='onChooseFile(event, onFileLoad.bind(this, "uploadedFile"))'
         />
-        <p id="contents"></p>
+        <p id="uploadedFile"></p>
+        <p
+          id="encryptedWarning"
+          style="padding-top: 1em;padding-bottom: 1em;color:red"
+        ></p>
         <button
           onclick="encryption()"
           type="button"
@@ -141,62 +145,32 @@
       var plainText = document.getElementById("plainText");
       var cipherText = document.getElementById("cipherText");
       var encryptedText = document.getElementById("encryptedText");
+      var encryptedWarning = document.getElementById("encryptedWarning");
       var decryptedText = document.getElementById("decryptedText");
 
       function keyGen() {
-        // Public Key Gen
-        let num = 50;
-        let p = randomPrime(num);
-        let q = randomPrime(num);
-        let m = p * q;
-        let f = (p - 1) * (q - 1);
-        let choices = Array.from(Array(f - 2).keys()).map(function(val) {
-          return val + 2;
-        });
-        choices = choices.map(el => {
-          if (gcd(el, f) === 1) return el;
-        });
-        choices = choices.filter(function(el) {
-          return el != null;
-        });
-        let encryptionExponent = choices.shuffle().pop();
-        let publicResult = encryptionExponent + "," + m;
-        publicKey.value = publicResult;
-
-        // End Public Key Gen
-        // Private Key Gen
-
-        let private = Array.from(Array(1000).keys())
-          .map(el => {
-            if ((el * encryptionExponent) % f == 1) return el;
-          })
-          .filter(function(el) {
-            return el != null;
-          });
-
-        private = private.pop();
-        let privateResult = "";
-        if (private == undefined) {
-          privateResult = "Error generation key, try again";
-        } else {
-          privateResult = private + "," + m;
-        }
-        privateKey.value = privateResult;
-
-        // End Private Key Gen
+        var key = RSA.generate(10);
+        publicKey.innerHTML = key.n + "," + key.e;
+        privateKey.innerHTML = key.d + "," + key.e;
       }
 
       function encryption() {
-        let pubKey = publicKey.value.split(",");
-        let pubExpo = plainText.value ** pubKey[0];
-        let result = pubExpo % pubKey[1];
-        console.log("pubKey: ", pubKey);
-        console.log("pubExpo: ", pubExpo);
-        console.log("result: ", result);
-        let newRes = RSA.encrypt(plainText.value, 11, 164);
-        console.log("encrypt: ", newRes);
-        console.log("encrypt: ", RSA.decrypt(newRes, 971, 164));
-        encryptedText.value = result;
+        encryptedWarning.innerHTML = "";
+        let key = document.getElementById("uploadedFile").textContent.split(',');
+        let message = plainText.value.split("");
+        if (key == "") {
+          encryptedText.value = "";
+          encryptedWarning.innerHTML =
+            "Public key is incorrect, try uploading again";
+          return;
+        }
+
+        let encryptedArr = [];
+        message.forEach(element => {
+          encryptedArr.push(RSA.encrypt(alphaVal(element),key[0],key[1]));
+        });
+
+        encryptedText.value = encryptedArr.join(",");
       }
 
       function decryption() {
@@ -207,32 +181,6 @@
         console.log("privExpo: ", privExpo);
         console.log("result: ", result);
         decryptedText.value = result;
-      }
-
-      Array.prototype.shuffle = function() {
-        let i = this.length,
-          j,
-          temp;
-        if (i == 0) return this;
-        while (--i) {
-          j = Math.floor(Math.random() * (i + 1));
-          temp = this[i];
-          this[i] = this[j];
-          this[j] = temp;
-        }
-        return this;
-      };
-
-      function gcd(x, y) {
-        if (typeof x !== "number" || typeof y !== "number") return false;
-        x = Math.abs(x);
-        y = Math.abs(y);
-        while (y) {
-          var t = y;
-          y = x % y;
-          x = t;
-        }
-        return x;
       }
 
       function onFileLoad(elementId, event) {
@@ -280,20 +228,6 @@
         document.body.removeChild(element);
       }
 
-      const randomInt = (min, max) =>
-        Math.floor(Math.random() * Math.floor(max - min) + Math.floor(min));
-
-      const isPrime = num =>
-        !Array.from(Array(Math.floor(num / 2))).some((_, index) =>
-          index >= 2 ? num % index === 0 : false
-        );
-
-      const randomPrime = max => {
-        const num = randomInt(3, max);
-
-        return isPrime(num) ? num : randomPrime(max);
-      };
-
       const alphaVal = s => {
         if (isNaN(parseInt(s))) {
           return s.toLowerCase().charCodeAt(0) - 97 + 1;
@@ -307,8 +241,7 @@
 
       const numToAlpha = s => {
         if (s <= 0) {
-          if(s == 0)
-            return 0
+          if (s == 0) return 0;
           return s * -1;
         } else {
           return String.fromCharCode(s + 96);
@@ -364,7 +297,12 @@
       };
 
       RSA.decrypt = function(c, d, n) {
-        return bigInt(c).modPow(d, n);
+        console.log(c);
+        console.log(d);
+        console.log(n);
+        let result = bigInt(c).modPow(d, n);
+        console.log(result);
+        return result;
       };
     </script>
   </body>
