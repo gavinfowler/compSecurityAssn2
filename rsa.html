@@ -139,14 +139,19 @@
     </div>
     <div style="padding-bottom: 10em"></div>
     <script>
-      //https://en.wikibooks.org/wiki/Cryptography/A_Basic_Public_Key_Example
+      // Keys
       var publicKey = document.getElementById("publicKey");
       var privateKey = document.getElementById("privateKey");
+
+      // Encryption
       var plainText = document.getElementById("plainText");
-      var cipherText = document.getElementById("cipherText");
       var encryptedText = document.getElementById("encryptedText");
       var encryptedWarning = document.getElementById("encryptedWarning");
+
+      // Decryption
+      var cipherText = document.getElementById("cipherText");
       var decryptedText = document.getElementById("decryptedText");
+      var decryptedWarning = document.getElementById("decryptedWarning");
 
       function keyGen() {
         var key = RSA.generate(10);
